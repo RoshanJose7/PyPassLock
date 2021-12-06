@@ -1,5 +1,6 @@
 import os
 from cryptography.fernet import Fernet
+from bcrypt import gensalt, hashpw
 import json
 
 def load_key():
@@ -16,25 +17,26 @@ def write_key():
 
 if os.path.isfile("data.json") and os.path.getsize("data.json") > 0:
     with open("data.json", "r+") as data:
-        master_pwd = input("Enter Master Password: ")
-        key = load_key() + master_pwd.encode()
-        fer = Fernet(key)
-
         json_data = json.load(data)
-        if json_data["keyCreated"] != True: write_key()
-        encoded_mas_pwd = str(json_data["masterPassword"])
-        if master_pwd != (encoded_mas_pwd.encode().decode()):
+        master_pwd = input("Enter Master Password: ")
+
+        if json_data["masterPassword"] == str(hashpw(bytes(master_pwd, 'utf-8'), gensalt(14))):
             print("Passwords do not match")
             exit(101)
 
+        key = load_key() + master_pwd.encode()
+        fer = Fernet(key)
+
+        if json_data["keyCreated"] != True: write_key()
 else:
     write_key()
-    mas_pwd = input("Enter the Master Password: ")
+    mas_pwd = input("Enter a new Master Password: ")
+    password = str(hashpw(bytes(mas_pwd, 'utf-8'), gensalt(14)))
 
     json_data = {
         "firstTime": True,
         "keyCreated": True,
-        "masterPassword": mas_pwd.encode(),
+        "masterPassword": password,
     }
 
     with open('data.json', 'w') as json_file:

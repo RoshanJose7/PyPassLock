@@ -1,8 +1,5 @@
-# Password Manager
-
-- store's account details to an external text file
-- password's are encrypted (using `cryptography` python library) before it's stored
-- uses a master password to protect user data
+# PyPassLock
+Introducing PyPassLock: Your Secure Python Password Manager! Safeguarded by a master password, it utilizes the cryptography library for robust encryption. Manage your passwords with peace of mind using PyPassLock! 🔒🐍 #PasswordManager #SecureEncryption #PyPassLock
 
 ## Steps to use
 

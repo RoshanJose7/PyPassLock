@@ -3,6 +3,7 @@ from cryptography.fernet import Fernet
 from bcrypt import gensalt, hashpw
 import json
 
+
 def load_key():
     file = open('key.key', 'rb')
     key = file.read()
@@ -14,6 +15,7 @@ def write_key():
     key = Fernet.generate_key()
     with open('key.key', 'wb') as key_file:
         key_file.write(key)
+
 
 if os.path.isfile("data.json") and os.path.getsize("data.json") > 0:
     with open("data.json", "r+") as data:
@@ -27,7 +29,7 @@ if os.path.isfile("data.json") and os.path.getsize("data.json") > 0:
         key = load_key() + master_pwd.encode()
         fer = Fernet(key)
 
-        if json_data["keyCreated"] != True: write_key()
+        if not json_data["keyCreated"]: write_key()
 else:
     write_key()
     mas_pwd = input("Enter a new Master Password: ")
@@ -48,7 +50,8 @@ def view():
 
     if os.path.isfile("passwords.txt") and os.path.getsize("passwords.txt") > 0:
         with open('passwords.txt', 'r+') as f:
-            f.seek()
+            f.seek(0)
+
             for line in f.readlines():
                 data = line.rstrip()
                 user, pwd = data.split("|")
@@ -57,8 +60,9 @@ def view():
                 print("User Name: " + user + "\nPassword: " + fer.decrypt(pwd.encode()).decode())
                 print("-----------------------")
                 print("\n")
-    else: 
+    else:
         print("No Accounts stored")
+
 
 def add():
     print("Add Mode")
